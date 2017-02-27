@@ -8,38 +8,37 @@ import java.util.ArrayList;
 
 public class FileOpener {
 
-    public static void main(String[] args) {
-        String filename = "WEBPAGES_RAW/0/1";
+    private static ArrayList<String> allFiles = new ArrayList<String>();
+
+    public static void main(String[] args){
         String fileContent = "";
-
+        ArrayList<String> filesToBeIndexed = listOfFilesInFolder(new File("WEBPAGES_RAW"));
         try {
+            
+            // not printing result, probably needs some check for file type.
+            for(String file : filesToBeIndexed) {
+                BufferedReader buffer = new BufferedReader(new FileReader(file));
 
-            ArrayList<String> filesToBeIndexed = listOfFilesInFolder(new File("WEBPAGES_RAW"));
+                String line ;
+                fileContent = "";
+                while((line = buffer.readLine()) != null) {
+                    fileContent += line + "\n";
+                }
 
-            // the following code needs to be extented to the whole  list of line 17
-            BufferedReader buffer = new BufferedReader(new FileReader(filename));
+                // do whatever you want here (probably use parser and then feed content to Luecene)
+                // System.out.println(fileContent + "\n\n\n");
 
-            String line ;
-            fileContent = "";
-            while((line = buffer.readLine()) != null) {
-                fileContent += line + "\n";
+                buffer.close();
             }
-
-            System.out.println(fileContent);
-
-            buffer.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
+
 
     // find all files in a directory, included its subdirectories
     public static ArrayList<String> listOfFilesInFolder(File folder) {
-        ArrayList<String> allFiles = new ArrayList<String>();
         for (File singleFile : folder.listFiles()) {
             if (singleFile.isDirectory()) {
                 listOfFilesInFolder(singleFile);
