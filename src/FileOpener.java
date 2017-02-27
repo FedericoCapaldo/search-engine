@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.Buffer;
+import java.nio.file.Files;
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
 public class FileOpener {
@@ -14,10 +16,11 @@ public class FileOpener {
         String fileContent = "";
         ArrayList<String> filesToBeIndexed = listOfFilesInFolder(new File("WEBPAGES_RAW"));
         try {
-            
-            // not printing result, probably needs some check for file type.
+
+            BufferedReader buffer ;
+
             for(String file : filesToBeIndexed) {
-                BufferedReader buffer = new BufferedReader(new FileReader(file));
+                buffer = new BufferedReader(new FileReader(file));
 
                 String line ;
                 fileContent = "";
@@ -26,9 +29,10 @@ public class FileOpener {
                 }
 
                 // do whatever you want here (probably use parser and then feed content to Luecene)
-                // System.out.println(fileContent + "\n\n\n");
 
-                buffer.close();
+                System.out.println(fileContent + "\n\n\n");
+
+                // should buffer.close() ? at each iteration
             }
 
         } catch (IOException e) {
@@ -43,7 +47,14 @@ public class FileOpener {
             if (singleFile.isDirectory()) {
                 listOfFilesInFolder(singleFile);
             } else {
-               allFiles.add(singleFile.getPath());
+                try {
+                    // checking that the filetype is/contains html to avoid indexing of json and other filetypes
+                    if(Files.probeContentType(singleFile.toPath()).contains("html")) {
+                        allFiles.add(singleFile.getPath());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
