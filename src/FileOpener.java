@@ -14,40 +14,31 @@ import java.util.HashMap;
 
 public class FileOpener
 {
-    private static String BOOK_KEEPING = "WEBPAGES_RAW/bookkeeping.json";
+    private static String RELATIVE_WEBPAGES_DIRECTORY = "WEBPAGES_RAW/";
+    private static String RELATIVE_BOOKKEEPING_DIRECTORY = "WEBPAGES_RAW/bookkeeping.json";
+
     private static ArrayList<String> ALL_FILES = new ArrayList<>();
 
-    public static void main(String[] args) {
-        HashMap<String, String> filesToBeIndexed = getDirectories();
 
+    public static String getFileContent(String fileDirectory) throws IOException
+    {
+        BufferedReader buffer = new BufferedReader(new FileReader(fileDirectory));
+        StringBuilder content = new StringBuilder();
+        String line;
 
-
-        try {
-            for (HashMap.Entry<String, String> kv : filesToBeIndexed.entrySet())
-            {
-                BufferedReader buffer = new BufferedReader(new FileReader(kv.getKey()));
-                StringBuilder content = new StringBuilder();
-                String line;
-
-                while ((line = buffer.readLine()) != null)
-                {
-                    content.append(line + "\n");
-                }
-
-                Parser.parseHTML(kv.getKey());
-
-                System.out.println(kv.getKey());
-                buffer.close();
-            }
+        while ((line = buffer.readLine()) != null)
+        {
+            content.append(line + "\n");
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        buffer.close();
+
+        return content.toString();
     }
 
 
     // find all files in a directory, included its subdirectories
-    public static void listOfFilesInFolder(File folder) {
+    public static ArrayList<String> listOfFilesInFolder(File folder) {
         for (File singleFile : folder.listFiles()) {
             if (singleFile.isDirectory()) {
                 listOfFilesInFolder(singleFile);
@@ -56,8 +47,11 @@ public class FileOpener
                 ALL_FILES.add(singleFile.getPath());
             }
         }
+
+        return ALL_FILES;
     }
 
+    // temporary to get reading to work without null pointer exception
     public static HashMap<String, String> getDirectories()
     {
         HashMap<String, String> directories = new HashMap<>();
@@ -65,12 +59,12 @@ public class FileOpener
 
         try
         {
-            Object object = jsonParser.parse(new FileReader(BOOK_KEEPING));
+            Object object = jsonParser.parse(new FileReader(RELATIVE_BOOKKEEPING_DIRECTORY));
             JSONObject jsonObject = (JSONObject) object;
 
             for (Object key : jsonObject.keySet())
             {
-                directories.put("WEBPAGES_RAW/" + key, (String) jsonObject.get(key));
+                directories.put(RELATIVE_WEBPAGES_DIRECTORY + key, (String) jsonObject.get(key));
             }
         }
         catch (Exception e)
