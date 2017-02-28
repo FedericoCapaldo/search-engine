@@ -46,6 +46,8 @@ public class Indexer
                 Field url = new Field("url", kv.getValue(), token);
                 Field content = new Field("content", Parser.parseHTML(kv.getKey()), tokenize);
 
+                System.out.println(Parser.categorizeContent(Parser.parseHTML(kv.getKey())));
+
                 Document doc = new Document();
                 doc.add(url);
                 doc.add(content);
@@ -54,7 +56,7 @@ public class Indexer
             }
             catch (IOException | IllegalArgumentException e)
             {
-                System.out.println("\tfailed: " + e.getMessage());
+                e.printStackTrace();
             }
         }
 

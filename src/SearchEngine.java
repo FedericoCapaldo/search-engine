@@ -15,11 +15,8 @@ public class SearchEngine
 			// comment this line out once you build index successfully to avoid rebuilding.
 			//	if any changes are made to indexing options, you must reindex.
 			indexer.buildIndex();
-
-
-
-
 			System.out.println("Documents indexed: " + indexer.getIndexer().numDocs());
+
 
 			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
 
