@@ -1,6 +1,4 @@
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -9,7 +7,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Set;
+
 
 public class Indexer
 {
@@ -17,13 +15,13 @@ public class Indexer
 
     public Indexer(String indexDirectory) throws IOException
     {
-        Directory dir = FSDirectory.open(Paths.get(indexDirectory));
-        IndexWriterConfig conf = new IndexWriterConfig();
+        Directory directory = FSDirectory.open(Paths.get(indexDirectory));
+        IndexWriterConfig configuration = new IndexWriterConfig();
+        configuration.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+        configuration.setRAMBufferSizeMB(64);
+        configuration.setCommitOnClose(true);
 
-        // reuse existing index or create one if it does not exist
-        conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-
-        indexer = new IndexWriter(dir, conf);
+        indexer = new IndexWriter(directory, configuration);
     }
 
     public IndexWriter getIndexer()
@@ -31,13 +29,13 @@ public class Indexer
         return indexer;
     }
 
-    public void buildIndex(HashMap<String, String> pages) throws IOException
+    public void buildIndex() throws IOException
     {
-        for (HashMap.Entry<String, String> kv : pages.entrySet())
+        for (HashMap.Entry<String, String> kv : FileOpener.getDirectories().entrySet())
         {
             try
             {
-                System.out.println("Indexing: " + kv.getKey());
+                System.out.println("indexing " + kv.getKey());
 
                 FieldType token = new FieldType(StringField.TYPE_STORED);
                 token.setStoreTermVectors(true);
@@ -46,7 +44,7 @@ public class Indexer
                 tokenize.setStoreTermVectors(true);
 
                 Field url = new Field("url", kv.getValue(), token);
-                Field content = new Field("body", Parser.parseHTML(kv.getKey()), tokenize);
+                Field content = new Field("content", Parser.parseHTML(kv.getKey()), tokenize);
 
                 Document doc = new Document();
                 doc.add(url);
@@ -56,8 +54,10 @@ public class Indexer
             }
             catch (IOException | IllegalArgumentException e)
             {
-
+                System.out.println("\tfailed: " + e.getMessage());
             }
         }
+
+        indexer.commit();
     }
 }
