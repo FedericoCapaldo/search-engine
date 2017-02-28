@@ -22,22 +22,21 @@ public class Engine
 		try
 		{
 			Indexer indexer = new Indexer("index");
-
-			// mapping from file directory -> url
-			HashMap<String, String> pages = FileOpener.getDirectories();
-			indexer.buildIndex(pages);
-
-			System.out.println(indexer.getIndexer().numDocs());
+			indexer.buildIndex(FileOpener.getDirectories());
+			System.out.println("NUMBER OF DOCS INDEXED: " + indexer.getIndexer().numDocs());
 
 			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
 
 			System.out.println(reader.document(5));
+			System.out.println(reader.getTermVector(1, "body"));
+
+
 			IndexSearcher indexSearcher = new IndexSearcher(reader);
 
 			QueryParser queryParser = new QueryParser("body", new StandardAnalyzer());
-			Query query = queryParser.parse("Lubomir");
+			Query query = queryParser.parse("uci pattis");
 			System.out.println("Type of query: " + query.getClass().getSimpleName());
-			TopDocs docs = indexSearcher.search(query, 10);
+			TopDocs docs = indexSearcher.search(query, 25);
 			ScoreDoc[] hits = docs.scoreDocs;
 
 
@@ -46,9 +45,11 @@ public class Engine
 			{
 				int docId = hits[i].doc;
 				Document d = reader.document(docId);
-				System.out.println(d);
+				//System.out.println(d);
 				System.out.println((i + 1) + ". " + d.get("url"));
 			}
+
+			indexer.getIndexer().close();
 		}
 		catch (Exception e)
 		{

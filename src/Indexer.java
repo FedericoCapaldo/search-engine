@@ -1,8 +1,6 @@
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -20,7 +18,7 @@ public class Indexer
     public Indexer(String indexDirectory) throws IOException
     {
         Directory dir = FSDirectory.open(Paths.get(indexDirectory));
-        IndexWriterConfig conf = new IndexWriterConfig(new StandardAnalyzer());
+        IndexWriterConfig conf = new IndexWriterConfig();
 
         // reuse existing index or create one if it does not exist
         conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -41,11 +39,16 @@ public class Indexer
             {
                 System.out.println("Indexing: " + kv.getKey());
 
+                FieldType token = new FieldType(StringField.TYPE_STORED);
+                token.setStoreTermVectors(true);
+
+                FieldType tokenize = new FieldType(TextField.TYPE_STORED);
+                tokenize.setStoreTermVectors(true);
+
+                Field url = new Field("url", kv.getValue(), token);
+                Field content = new Field("body", Parser.parseHTML(kv.getKey()), tokenize);
+
                 Document doc = new Document();
-
-                StringField url = new StringField("url", kv.getValue(), Field.Store.YES);
-                TextField content = new TextField("body", Parser.parseHTML(kv.getKey()), Field.Store.NO);
-
                 doc.add(url);
                 doc.add(content);
 
