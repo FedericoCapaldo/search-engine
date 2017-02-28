@@ -1,4 +1,6 @@
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
 
 import java.util.HashMap;
 
@@ -18,9 +20,12 @@ public class Engine
 			for (HashMap.Entry<String, String> kv : pages.entrySet())
 			{
 				//System.out.println(kv.getKey());
-				//System.out.println(Parser.parseHTML(kv.getKey()));
+				System.out.println(Parser.parseHTML(kv.getKey()));
 
 				Document doc = new Document();
+
+				TextField field = new TextField("a", "b", Field.Store.YES);
+				doc.add(field);
 
 				indexer.getIndexer().addDocument(doc);
 			}
