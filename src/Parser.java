@@ -14,7 +14,7 @@ public class Parser
         {
             File html = new File(file_path);
             Document docSoup = Jsoup.parse(html, "UTF-8");
-            String[] requiredTags = {"h1", "h2", "h3", "strong", "b", "body"};
+            String[] requiredTags = {"h1", "h2", "h3", "strong", "b", "body", "em"};
 
             Whitelist whitelist = new Whitelist();
             whitelist.addTags(requiredTags);
