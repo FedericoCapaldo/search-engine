@@ -23,7 +23,7 @@ public class SearchEngine
 
 			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
 
-			Terms tv = reader.getTermVector(1, "content");
+			Terms tv = reader.getTermVector(8, "content");
 			TermsEnum iter = tv.iterator();
 			while (iter.next() != null)
 			{

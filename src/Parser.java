@@ -21,4 +21,9 @@ public class Parser
 
         return ret;
     }
+
+    public static String categorizeContent(String html)
+    {
+        Document d = Jsoup.parse(html);
+    }
 }
