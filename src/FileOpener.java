@@ -52,6 +52,7 @@ public class FileOpener
     }
 
     // temporary to get reading to work without null pointer exception
+    // returns a mapping from file directory
     public static HashMap<String, String> getDirectories()
     {
         HashMap<String, String> directories = new HashMap<>();

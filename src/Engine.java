@@ -14,8 +14,7 @@ public class Engine
 			for (HashMap.Entry<String, String> kv : pages.entrySet())
 			{
 				System.out.println(kv.getKey());
-
-				Parser.parseHTML(kv.getKey());
+				System.out.println(Parser.parseHTML(kv.getKey()));
 			}
 		}
 		catch (Exception e)

@@ -18,8 +18,8 @@ public class Indexer
         indexer = new IndexWriter(dir, conf);
     }
 
-    public void buildIndex()
+    public IndexWriter getIndexer()
     {
-
+        return indexer;
     }
 }
