@@ -1,3 +1,5 @@
+import org.apache.lucene.document.Document;
+
 import java.util.HashMap;
 
 public class Engine
@@ -15,6 +17,10 @@ public class Engine
 			{
 				System.out.println(kv.getKey());
 				System.out.println(Parser.parseHTML(kv.getKey()));
+
+				Document doc = new Document();
+
+				indexer.getIndexer().addDocument(doc);
 			}
 		}
 		catch (Exception e)

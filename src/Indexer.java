@@ -22,4 +22,9 @@ public class Indexer
     {
         return indexer;
     }
+
+    public void addHTML()
+    {
+
+    }
 }
