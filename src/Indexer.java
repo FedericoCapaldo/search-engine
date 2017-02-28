@@ -1,5 +1,7 @@
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -18,7 +20,7 @@ public class Indexer
     public Indexer(String indexDirectory) throws IOException
     {
         Directory dir = FSDirectory.open(Paths.get(indexDirectory));
-        IndexWriterConfig conf = new IndexWriterConfig();
+        IndexWriterConfig conf = new IndexWriterConfig(new StandardAnalyzer());
 
         // reuse existing index or create one if it does not exist
         conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -31,18 +33,28 @@ public class Indexer
         return indexer;
     }
 
-    public void buildIndex(Set<String> paths) throws IOException
+    public void buildIndex(HashMap<String, String> pages) throws IOException
     {
-        for (String path : paths)
+        for (HashMap.Entry<String, String> kv : pages.entrySet())
         {
-            System.out.println(Parser.parseHTML(path));
+            try
+            {
+                System.out.println("Indexing: " + kv.getKey());
 
-            Document doc = new Document();
+                Document doc = new Document();
 
-            TextField field = new TextField("a", "b", Field.Store.YES);
-            doc.add(field);
+                StringField url = new StringField("url", kv.getValue(), Field.Store.YES);
+                TextField content = new TextField("body", Parser.parseHTML(kv.getKey()), Field.Store.NO);
 
-            indexer.addDocument(doc);
+                doc.add(url);
+                doc.add(content);
+
+                indexer.addDocument(doc);
+            }
+            catch (IOException | IllegalArgumentException e)
+            {
+
+            }
         }
     }
 }
