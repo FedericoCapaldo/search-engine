@@ -1,3 +1,6 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,58 +10,74 @@ import java.nio.Buffer;
 import java.nio.file.Files;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class FileOpener {
+public class FileOpener
+{
+    private static String BOOK_KEEPING = "WEBPAGES_RAW/bookkeeping.json";
+    private static ArrayList<String> ALL_FILES = new ArrayList<>();
 
-    private static ArrayList<String> allFiles = new ArrayList<String>();
+    public static void main(String[] args) {
+        HashMap<String, String> filesToBeIndexed = getDirectories();
 
-    public static void main(String[] args){
-        String fileContent = "";
-        ArrayList<String> filesToBeIndexed = listOfFilesInFolder(new File("WEBPAGES_RAW"));
+
+
         try {
+            for (HashMap.Entry<String, String> kv : filesToBeIndexed.entrySet())
+            {
+                BufferedReader buffer = new BufferedReader(new FileReader(kv.getKey()));
+                StringBuilder content = new StringBuilder();
+                String line;
 
-            BufferedReader buffer ;
-
-            for(String file : filesToBeIndexed) {
-                buffer = new BufferedReader(new FileReader(file));
-
-                String line ;
-                fileContent = "";
-                while((line = buffer.readLine()) != null) {
-                    fileContent += line + "\n";
+                while ((line = buffer.readLine()) != null)
+                {
+                    content.append(line + "\n");
                 }
 
-                // do whatever you want here (probably use parser and then feed content to Luecene)
+                Parser.parseHTML(kv.getKey());
 
-                System.out.println(fileContent + "\n\n\n");
-
-                // should buffer.close() ? at each iteration
+                System.out.println(kv.getKey());
+                buffer.close();
             }
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
     // find all files in a directory, included its subdirectories
-    public static ArrayList<String> listOfFilesInFolder(File folder) {
+    public static void listOfFilesInFolder(File folder) {
         for (File singleFile : folder.listFiles()) {
             if (singleFile.isDirectory()) {
                 listOfFilesInFolder(singleFile);
-            } else {
-                try {
-                    // checking that the filetype is/contains html to avoid indexing of json and other filetypes
-                    if(Files.probeContentType(singleFile.toPath()).contains("html")) {
-                        allFiles.add(singleFile.getPath());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            }
+            else if (singleFile.isFile()) {
+                ALL_FILES.add(singleFile.getPath());
             }
         }
-
-        return allFiles;
     }
 
+    public static HashMap<String, String> getDirectories()
+    {
+        HashMap<String, String> directories = new HashMap<>();
+        JSONParser jsonParser = new JSONParser();
+
+        try
+        {
+            Object object = jsonParser.parse(new FileReader(BOOK_KEEPING));
+            JSONObject jsonObject = (JSONObject) object;
+
+            for (Object key : jsonObject.keySet())
+            {
+                directories.put("WEBPAGES_RAW/" + key, (String) jsonObject.get(key));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return directories;
+    }
 }
