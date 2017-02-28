@@ -12,26 +12,11 @@ public class Engine
 		{
 			Indexer indexer = new Indexer("index");
 
-			System.out.println(indexer.getIndexer().numDocs());
-
 			// mapping from file directory -> url
 			HashMap<String, String> pages = FileOpener.getDirectories();
-
-			for (HashMap.Entry<String, String> kv : pages.entrySet())
-			{
-				//System.out.println(kv.getKey());
-				System.out.println(Parser.parseHTML(kv.getKey()));
-
-				Document doc = new Document();
-
-				TextField field = new TextField("a", "b", Field.Store.YES);
-				doc.add(field);
-
-				indexer.getIndexer().addDocument(doc);
-			}
+			indexer.buildIndex(pages.keySet());
 
 			System.out.println(indexer.getIndexer().numDocs());
-
 
 			indexer.getIndexer().close();
 		}

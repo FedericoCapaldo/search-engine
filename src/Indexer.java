@@ -1,3 +1,6 @@
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -5,6 +8,8 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Indexer
 {
@@ -26,8 +31,18 @@ public class Indexer
         return indexer;
     }
 
-    public void addHTML()
+    public void buildIndex(Set<String> paths) throws IOException
     {
+        for (String path : paths)
+        {
+            System.out.println(Parser.parseHTML(path));
 
+            Document doc = new Document();
+
+            TextField field = new TextField("a", "b", Field.Store.YES);
+            doc.add(field);
+
+            indexer.addDocument(doc);
+        }
     }
 }
