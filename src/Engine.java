@@ -7,11 +7,15 @@ public class Engine
 		try
 		{
 			Indexer indexer = new Indexer("index");
-			HashMap<String, String> webpages = FileOpener.getDirectories();
 
-			for (HashMap.Entry<String, String> kv : webpages.entrySet())
+			// mapping from file directory -> url
+			HashMap<String, String> pages = FileOpener.getDirectories();
+
+			for (HashMap.Entry<String, String> kv : pages.entrySet())
 			{
 				System.out.println(kv.getKey());
+
+				Parser.parseHTML(kv.getKey());
 			}
 		}
 		catch (Exception e)
