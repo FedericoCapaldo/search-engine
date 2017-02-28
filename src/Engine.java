@@ -16,7 +16,7 @@ public class Engine
 			for (HashMap.Entry<String, String> kv : pages.entrySet())
 			{
 				System.out.println(kv.getKey());
-				System.out.println(Parser.parseHTML(kv.getKey()));
+				//System.out.println(Parser.parseHTML(kv.getKey()));
 
 				Document doc = new Document();
 

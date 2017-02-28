@@ -15,6 +15,9 @@ public class Indexer
         Directory dir = FSDirectory.open(Paths.get(indexDirectory));
         IndexWriterConfig conf = new IndexWriterConfig();
 
+        // reuse existing index or create one if it does not exist
+        conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
+
         indexer = new IndexWriter(dir, conf);
     }
 
