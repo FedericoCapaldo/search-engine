@@ -22,7 +22,7 @@ public class Parser
         }
         catch (Exception ex)
         {
-            System.out.println("ERROR: File not in relative path");
+            System.out.println("Parser.parseHTML: could not open file: " + file_path);
         }
 
         return ret;

@@ -10,35 +10,33 @@ import java.nio.Buffer;
 import java.nio.file.Files;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FileOpener
 {
     private static String BOOK_KEEPING = "WEBPAGES_RAW/bookkeeping.json";
-    private static ArrayList<String> ALL_FILES = new ArrayList<String>();
+    private static ArrayList<String> ALL_FILES = new ArrayList<>();
 
     public static void main(String[] args) {
-        ArrayList<String> filesToBeIndexed = getDirectories();
+        HashMap<String, String> filesToBeIndexed = getDirectories();
 
-        BufferedReader buffer;
-        String fileContent;
+
 
         try {
-
-            for (String file : filesToBeIndexed) {
-                buffer = new BufferedReader(new FileReader(file));
+            for (HashMap.Entry<String, String> kv : filesToBeIndexed.entrySet())
+            {
+                BufferedReader buffer = new BufferedReader(new FileReader(kv.getKey()));
+                StringBuilder content = new StringBuilder();
                 String line;
-                fileContent = "";
 
                 while ((line = buffer.readLine()) != null)
                 {
-                    fileContent += line + "\n";
+                    content.append(line + "\n");
                 }
 
-                // do whatever you want here (probably use parser and then feed content to Luecene)
+                Parser.parseHTML(kv.getKey());
 
-                System.out.println(Parser.parseHTML(file));
-
-                // should buffer.close() ? at each iteration
+                System.out.println(kv.getKey());
                 buffer.close();
             }
         }
@@ -60,9 +58,9 @@ public class FileOpener
         }
     }
 
-    public static ArrayList<String> getDirectories()
+    public static HashMap<String, String> getDirectories()
     {
-        ArrayList<String> directories = new ArrayList<>();
+        HashMap<String, String> directories = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
 
         try
@@ -72,7 +70,7 @@ public class FileOpener
 
             for (Object key : jsonObject.keySet())
             {
-                directories.add("WEBPAGES_RAW/" + key);
+                directories.put("WEBPAGES_RAW/" + key, (String) jsonObject.get(key));
             }
         }
         catch (Exception e)
