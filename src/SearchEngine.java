@@ -5,6 +5,7 @@ import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.IndexSearcher;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 
@@ -16,9 +17,10 @@ public class SearchEngine
 		{
 			Indexer indexer = new Indexer("index");
 
+			PrintWriter writer = new PrintWriter("terms.txt");
 			// comment this line out once you build index successfully to avoid rebuilding.
 			//	if any changes are made to indexing options, you must reindex.
-//			indexer.buildIndex();
+			indexer.buildIndex();
 			System.out.println("Documents indexed: " + indexer.getIndexer().numDocs());
 
 			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
@@ -60,7 +62,6 @@ public class SearchEngine
 				}
 			}
 
-			//frequencies = sortByValue(frequencies);
 
 			Map<Integer, List<String>> sortedFrequencies = new TreeMap<>();
 
@@ -74,13 +75,15 @@ public class SearchEngine
 				sortedFrequencies.get(kv.getValue()).add(kv.getKey());
 			}
 
+
 			for (Map.Entry<Integer, List<String>> kv : sortedFrequencies.entrySet())
 			{
-				System.out.printf("%-10d %s%n", kv.getKey(), kv.getValue().toString());
+				writer.printf("%-10d %s%n", kv.getKey(), kv.getValue().toString());
 			}
 
-			System.out.println("unique terms: " + frequencies.keySet().size());
-
+			writer.printf("UNIQUE TERMS						= " + frequencies.keySet().size());
+			writer.printf("\nDOCUMENTS SUCCESSFULLY INDEXED	= " + indexer.getIndexer().numDocs());
+			writer.close();
 			IndexSearcher indexSearcher = new IndexSearcher(reader);
 
 			indexer.getIndexer().close();

@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class Parser
 {
-    public static String[] REQUIRED_TAGS = {"h1", "h2", "h3", "strong", "b", "body", "em"};
+    public static String[] REQUIRED_TAGS = {"h1", "h2", "h3", "strong", "b", "body", "em", "title"};
 
     public static String parseHTML(String file_path) throws IOException
     {
