@@ -33,16 +33,13 @@ public class Parser
         {
             Elements contents = doc.select(tag);
 
-            if (contents.hasAttr(tag) == true)
-            {
-                content.put(tag, new ArrayList<>());
+            content.put(tag, new ArrayList<>());
 
-                for (Element e : contents)
+            for (Element e : contents)
+            {
+                if (e.ownText().length() > 0)
                 {
-                    if (e.hasText())
-                    {
-                        content.get(tag).add(e.ownText());
-                    }
+                    content.get(tag).add(e.ownText());
                 }
             }
         }

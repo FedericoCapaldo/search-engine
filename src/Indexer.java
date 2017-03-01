@@ -19,7 +19,6 @@ public class Indexer
         Directory directory = FSDirectory.open(Paths.get(indexDirectory));
         IndexWriterConfig configuration = new IndexWriterConfig();
         configuration.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
-        configuration.setRAMBufferSizeMB(64);
         configuration.setCommitOnClose(true);
 
         indexer = new IndexWriter(directory, configuration);
