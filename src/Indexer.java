@@ -43,9 +43,11 @@ public class Indexer
                 FieldType tokenize = new FieldType(TextField.TYPE_STORED);
                 tokenize.setStoreTermVectors(true);
 
+                Field path = new Field("path", kv.getKey(), token);
                 Field url = new Field("url", kv.getValue(), token);
 
                 Document doc = new Document();
+                doc.add(path);
                 doc.add(url);
 
                 for (HashMap.Entry<String, ArrayList<String>> entry : Parser.categorizeContent(Parser.parseHTML(kv.getKey())).entrySet())
