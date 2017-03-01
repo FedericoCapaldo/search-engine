@@ -6,6 +6,7 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -44,13 +45,18 @@ public class Indexer
                 tokenize.setStoreTermVectors(true);
 
                 Field url = new Field("url", kv.getValue(), token);
-                Field content = new Field("content", Parser.parseHTML(kv.getKey()), tokenize);
-
-                System.out.println(Parser.categorizeContent(Parser.parseHTML(kv.getKey())));
 
                 Document doc = new Document();
                 doc.add(url);
-                doc.add(content);
+
+                for (HashMap.Entry<String, ArrayList<String>> entry : Parser.categorizeContent(Parser.parseHTML(kv.getKey())).entrySet())
+                {
+                    for (String text : entry.getValue())
+                    {
+                        Field content = new Field(entry.getKey(), text, tokenize);
+                        doc.add(content);
+                    }
+                }
 
                 indexer.addDocument(doc);
             }

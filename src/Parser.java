@@ -6,6 +6,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Parser
@@ -23,31 +24,29 @@ public class Parser
         return Jsoup.clean(docSoup.html(), whitelist);
     }
 
-    public static String categorizeContent(String html)
+    public static HashMap<String, ArrayList<String>> categorizeContent(String html)
     {
+        HashMap<String, ArrayList<String>> content = new HashMap<>();
         Document doc = Jsoup.parse(html).normalise();
-
-        HashMap<String, String> content = new HashMap<>();
-
-        // TODO: Tokenize titles into own fields, or combine all tags into one field?
 
         for (String tag : REQUIRED_TAGS)
         {
-            System.out.println("^^^^^^vvvvvv\n" + tag + ":\n");
-
             Elements contents = doc.select(tag);
-            System.out.println(doc.select(tag));
 
-            System.out.println("---");
-
-            for (Element e : contents)
+            if (contents.hasAttr(tag) == true)
             {
-                System.out.println(e.ownText());
-            }
+                content.put(tag, new ArrayList<>());
 
-            System.out.println("-----------");
+                for (Element e : contents)
+                {
+                    if (e.hasText())
+                    {
+                        content.get(tag).add(e.ownText());
+                    }
+                }
+            }
         }
 
-        return "";
+        return content;
     }
 }
