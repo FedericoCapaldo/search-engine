@@ -1,7 +1,11 @@
+
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.IndexSearcher;
+
+import java.util.*;
 
 
 public class SearchEngine
@@ -14,21 +18,68 @@ public class SearchEngine
 
 			// comment this line out once you build index successfully to avoid rebuilding.
 			//	if any changes are made to indexing options, you must reindex.
-			indexer.buildIndex();
+//			indexer.buildIndex();
 			System.out.println("Documents indexed: " + indexer.getIndexer().numDocs());
-
 
 			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
 
-			System.out.println(reader.document(5).getFields());
-			System.out.println("a");
 			Terms tv = reader.getTermVector(5, "body");
 
-			TermsEnum iter = tv.iterator();
-			while (iter.next() != null)
+
+			Map<String, Integer> frequencies = new TreeMap<>();
+
+			for (int docID = 0; docID < reader.maxDoc(); ++docID)
 			{
-				System.out.println(iter.term().utf8ToString());
+				Fields fields = reader.getTermVectors(docID);
+				Iterator<String> fieldsIterator = fields.iterator();
+
+				while (fieldsIterator.hasNext())
+				{
+					String fieldName = fieldsIterator.next();
+
+					if (fieldName.equals("url") == false)
+					{
+						Terms terms = fields.terms(fieldName);
+
+						TermsEnum termsIterator = terms.iterator();
+
+						while (termsIterator.next() != null)
+						{
+							String term = termsIterator.term().utf8ToString();
+
+							if (frequencies.containsKey(term))
+							{
+								frequencies.put(term, frequencies.get(term) + 1);
+							}
+							else
+							{
+								frequencies.put(term, 1);
+							}
+						}
+					}
+				}
 			}
+
+			//frequencies = sortByValue(frequencies);
+
+			Map<Integer, List<String>> sortedFrequencies = new TreeMap<>();
+
+			for (Map.Entry<String, Integer> kv : frequencies.entrySet())
+			{
+				if (!sortedFrequencies.containsKey(kv.getValue()))
+				{
+					sortedFrequencies.put(kv.getValue(), new ArrayList<String>());
+				}
+
+				sortedFrequencies.get(kv.getValue()).add(kv.getKey());
+			}
+
+			for (Map.Entry<Integer, List<String>> kv : sortedFrequencies.entrySet())
+			{
+				System.out.printf("%-10d %s%n", kv.getKey(), kv.getValue().toString());
+			}
+
+			System.out.println("unique terms: " + frequencies.keySet().size());
 
 			IndexSearcher indexSearcher = new IndexSearcher(reader);
 
