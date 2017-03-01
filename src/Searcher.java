@@ -18,13 +18,19 @@ public class Searcher
 	static
 	{
 		FIELD_WEIGHTS = new HashMap<>();
-		FIELD_WEIGHTS.put("title", 100f);
+		FIELD_WEIGHTS.put("title", 125f);
 		FIELD_WEIGHTS.put("h1", 75f);
 		FIELD_WEIGHTS.put("h2", 60f);
 		FIELD_WEIGHTS.put("h3", 45f);
+		FIELD_WEIGHTS.put("h4", 100f);
+		FIELD_WEIGHTS.put("h5", 100f);
+		FIELD_WEIGHTS.put("h6", 100f);
 		FIELD_WEIGHTS.put("strong", 30f);
 		FIELD_WEIGHTS.put("em", 25f);
-		FIELD_WEIGHTS.put("b", 25f);
+		FIELD_WEIGHTS.put("b", 100f);
+		FIELD_WEIGHTS.put("u", 100f);
+		FIELD_WEIGHTS.put("i", 100f);
+		FIELD_WEIGHTS.put("p", 50f);
 	}
 
 	private IndexSearcher indexSearcher;
@@ -34,7 +40,7 @@ public class Searcher
 	public Searcher(IndexWriter indexWriter) throws IOException
 	{
 		indexSearcher = new IndexSearcher(DirectoryReader.open(indexWriter));
-		queryParser = new MultiFieldQueryParser(Parser.REQUIRED_TAGS, new StandardAnalyzer());
+		queryParser = new MultiFieldQueryParser(Parser.REQUIRED_TAGS, new StandardAnalyzer(), FIELD_WEIGHTS);
 	}
 
 	public DirectoryReader getIndexReader()
@@ -46,7 +52,7 @@ public class Searcher
 	{
 		Query query = queryParser.parse(q);
 
-		TopDocs results = indexSearcher.search(query, 20);
+		TopDocs results = indexSearcher.search(query, 100);
 		ScoreDoc[] docs = results.scoreDocs;
 
 		return docs;
