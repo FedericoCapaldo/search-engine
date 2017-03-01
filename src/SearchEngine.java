@@ -1,12 +1,8 @@
 
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.Fields;
-import org.apache.lucene.index.Terms;
-import org.apache.lucene.index.TermsEnum;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
 
-import java.io.PrintWriter;
-import java.util.*;
+import java.util.Scanner;
 
 
 public class SearchEngine
@@ -16,17 +12,28 @@ public class SearchEngine
 		try
 		{
 			Indexer indexer = new Indexer("index");
-
-			// comment this line out once you build index successfully to avoid rebuilding.
-			//	if any changes are made to indexing options, you must reindex.
 //			indexer.buildIndex();
-			System.out.println("Documents indexed: " + indexer.getIndexer().numDocs());
+			Searcher searcher = new Searcher(indexer.getIndexer());
+			DirectoryReader dr = searcher.getIndexReader();
+			Scanner scanner = new Scanner(System.in);
 
-			DirectoryReader reader = DirectoryReader.open(indexer.getIndexer());
+			while (true)
+			{
+				System.out.print("\n\nQUERY: ");
+				String query = scanner.nextLine();
 
-			Terms tv = reader.getTermVector(5, "body");
+				if (query.equals("quit"))
+				{
+					break;
+				}
 
-			IndexSearcher indexSearcher = new IndexSearcher(reader);
+				ScoreDoc[] results = searcher.search(query);
+
+				for (int hit = 0; hit < results.length; ++hit)
+				{
+					System.out.printf("%6d: %6.2f: %s%n", hit + 1, results[hit].score, dr.document(results[hit].doc).get("url"));
+				}
+			}
 
 			indexer.getIndexer().close();
 		}
