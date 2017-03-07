@@ -12,7 +12,7 @@ public class SearchEngine
 		try
 		{
 			Indexer indexer = new Indexer("index");
-			indexer.buildIndex();
+//			indexer.buildIndex();
 			Searcher searcher = new Searcher(indexer.getIndexer());
 			DirectoryReader dr = searcher.getIndexReader();
 			Scanner scanner = new Scanner(System.in);
