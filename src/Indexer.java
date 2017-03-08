@@ -31,17 +31,17 @@ public class Indexer
 
     public void buildIndex() throws IOException
     {
+        FieldType token = new FieldType(StringField.TYPE_STORED);
+        token.setStoreTermVectors(true);
+
+        FieldType tokenize = new FieldType(TextField.TYPE_STORED);
+        tokenize.setStoreTermVectors(true);
+
         for (HashMap.Entry<String, String> kv : FileOpener.getDirectories().entrySet())
         {
             try
             {
                 System.out.println("indexing " + kv.getKey());
-
-                FieldType token = new FieldType(StringField.TYPE_STORED);
-                token.setStoreTermVectors(true);
-
-                FieldType tokenize = new FieldType(TextField.TYPE_STORED);
-                tokenize.setStoreTermVectors(true);
 
                 Field path = new Field("path", kv.getKey(), token);
                 Field url = new Field("url", kv.getValue(), tokenize);
