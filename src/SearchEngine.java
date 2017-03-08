@@ -31,7 +31,7 @@ public class SearchEngine
 
 				for (int hit = 0; hit < results.length; ++hit)
 				{
-					System.out.printf("%6d: %6.2f: \"%s\" - %s %n%n", hit + 1, results[hit].score, dr.document(results[hit].doc).get("title"), dr.document(results[hit].doc).get("url") );
+					System.out.printf("%6d: %6.2f: %s%n", hit + 1, results[hit].score, dr.document(results[hit].doc).get("url"));
 				}
 			}
 
