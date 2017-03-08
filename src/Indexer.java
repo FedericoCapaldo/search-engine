@@ -44,7 +44,7 @@ public class Indexer
                 tokenize.setStoreTermVectors(true);
 
                 Field path = new Field("path", kv.getKey(), token);
-                Field url = new Field("url", kv.getValue(), token);
+                Field url = new Field("url", kv.getValue(), tokenize);
 
                 Document doc = new Document();
                 doc.add(path);

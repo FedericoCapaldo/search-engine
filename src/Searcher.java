@@ -15,19 +15,21 @@ public class Searcher
 	static
 	{
 		FIELD_WEIGHTS = new HashMap<>();
-		FIELD_WEIGHTS.put("title", 90000f);
+		FIELD_WEIGHTS.put("title", 15f);
 		FIELD_WEIGHTS.put("h1", 4f);
 		FIELD_WEIGHTS.put("h2", 3.5f);
 		FIELD_WEIGHTS.put("h3", 3.25f);
-		FIELD_WEIGHTS.put("h4", 3f);
-		FIELD_WEIGHTS.put("h5", 2.75f);
-		FIELD_WEIGHTS.put("h6", 2.5f);
-		FIELD_WEIGHTS.put("strong", 2.25f);
-		FIELD_WEIGHTS.put("em", 2f);
+		FIELD_WEIGHTS.put("h4", 1.25f);
+		FIELD_WEIGHTS.put("h5", 1.25f);
+		FIELD_WEIGHTS.put("h6", 1.25f);
+		FIELD_WEIGHTS.put("strong", 3f);
+		FIELD_WEIGHTS.put("em", 3f);
 		FIELD_WEIGHTS.put("b", 1.75f);
 		FIELD_WEIGHTS.put("u", 1.75f);
 		FIELD_WEIGHTS.put("i", 1.75f);
 		FIELD_WEIGHTS.put("p", 1.25f);
+		FIELD_WEIGHTS.put("body", 0.5f);
+		FIELD_WEIGHTS.put("url", 10f);
 	}
 
 	private IndexSearcher indexSearcher;
