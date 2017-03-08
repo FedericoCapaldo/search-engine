@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class Parser
 {
-    public static String[] REQUIRED_TAGS = {"url", "title", "h1", "h2", "h3", "strong", "em", "b", "body", "p"};
+    public static String[] REQUIRED_TAGS = {"url", "title", "h1", "h2", "h3", "h4", "h5", "h6", "strong", "em", "b", "i", "u", "body", "p", "table", "tbody", "tr", "th", "td", "span"};
 
     public static String parseHTML(String file_path) throws IOException
     {
@@ -37,9 +37,13 @@ public class Parser
 
             for (Element e : contents)
             {
-                if (e.ownText().length() > 0)
+                // TODO: test ownText() vs text()...
+                // maybe unwrap() as well?
+
+                // NOTE: make sure to change both calls here!!!
+                if (e.text().length() > 0)
                 {
-                    content.get(tag).add(e.ownText());
+                    content.get(tag).add(e.text());
                 }
             }
         }
