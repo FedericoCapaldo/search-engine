@@ -43,7 +43,11 @@ public class SearchEngine
 				}
 				catch (ParseException e)
 				{
+<<<<<<< HEAD
 					System.out.println("INVALID QUERY");
+=======
+					System.out.printf("%6d: %6.2f: \"%s\" - %s %n", hit + 1, results[hit].score, dr.document(results[hit].doc).get("title"), dr.document(results[hit].doc).get("url") );
+>>>>>>> f1b9edc9f22148b52bbea4026ec0892615418f18
 				}
 			}
 
