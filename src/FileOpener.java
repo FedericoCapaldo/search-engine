@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class FileOpener
 {
+    // ensure this path is terminated with a forward slash
     private static String RELATIVE_WEBPAGES_DIRECTORY = "WEBPAGES_RAW/";
     private static String RELATIVE_BOOKKEEPING_DIRECTORY = "WEBPAGES_RAW/bookkeeping.json";
 

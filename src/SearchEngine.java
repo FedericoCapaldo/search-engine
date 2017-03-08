@@ -1,5 +1,6 @@
 
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 
 import java.util.Scanner;
@@ -19,23 +20,35 @@ public class SearchEngine
 
 			while (true)
 			{
-				System.out.print("\n\nQUERY: ");
-				String query = scanner.nextLine();
-
-				if (query.equals("quit"))
+				try
 				{
-					break;
+					System.out.print("\n\nquery: ");
+					String query = scanner.nextLine();
+
+					if (query.equals("quit"))
+					{
+						break;
+					}
+
+					ScoreDoc[] results = searcher.search(query);
+
+					for (int hit = 0; hit < results.length; ++hit)
+					{
+						System.out.printf("%6d: (%6.2f) %s%n                 %s%n%n",
+								hit + 1,
+								results[hit].score,
+								dr.document(results[hit].doc).get("title"),
+								dr.document(results[hit].doc).get("url"));
+					}
 				}
-
-				ScoreDoc[] results = searcher.search(query);
-
-				for (int hit = 0; hit < results.length; ++hit)
+				catch (ParseException e)
 				{
-					System.out.printf("%6d: %6.2f: %s%n", hit + 1, results[hit].score, dr.document(results[hit].doc).get("url"));
+					System.out.println("INVALID QUERY");
 				}
 			}
 
 			indexer.getIndexer().close();
+			dr.close();
 		}
 		catch (Exception e)
 		{
