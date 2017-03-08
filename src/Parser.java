@@ -27,7 +27,7 @@ public class Parser
     public static HashMap<String, ArrayList<String>> categorizeContent(String html)
     {
         HashMap<String, ArrayList<String>> content = new HashMap<>();
-        Document doc = Jsoup.parse(html).normalise();
+        Document doc = Jsoup.parse(html);
 
         for (String tag : REQUIRED_TAGS)
         {
@@ -37,13 +37,9 @@ public class Parser
 
             for (Element e : contents)
             {
-                // TODO: test ownText() vs text()...
-                // maybe unwrap() as well?
-
-                // NOTE: make sure to change both calls here!!!
-                if (e.text().length() > 0)
+                if (e.ownText().length() > 0)
                 {
-                    content.get(tag).add(e.text());
+                    content.get(tag).add(e.ownText());
                 }
             }
         }

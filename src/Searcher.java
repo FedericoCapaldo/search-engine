@@ -3,6 +3,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 
 import java.io.IOException;
@@ -19,22 +20,23 @@ public class Searcher
 	public Searcher(IndexWriter indexWriter) throws IOException
 	{
 		field_weights = new HashMap<>();
-//		field_weights.put("url", 10f);
-		field_weights.put("title", 10f);
-		field_weights.put("h1", 7f);
-		field_weights.put("h2", 6f);
-		field_weights.put("h3", 5f);
-		field_weights.put("strong", 4f);
-		field_weights.put("em", 4f);
-		field_weights.put("b", 2f);
-		field_weights.put("body", 1f);
-		field_weights.put("p", 1f);
-//		field_weights.put("table", 5)
-//		field_weights.put("th", 1.5f);
+//		field_weights.put("url", 2f);
+		field_weights.put("title", 3f);
+		field_weights.put("h1", 2f);
+		field_weights.put("h2", 1.85f);
+		field_weights.put("h3", 1.70f);
+		field_weights.put("strong", 1.75f);
+		field_weights.put("em", 1.25f);
+		field_weights.put("b", 1.5f);
+//		field_weights.put("body", 1.75f);
+//		field_weights.put("p", 1.75f);
+//		field_weights.put("table", 5);
+//		field_weights.put("th", 2f);
 //		field_weights.put("td", 1.5f);
 
 		indexSearcher = new IndexSearcher(DirectoryReader.open(indexWriter));
 		queryParser = new MultiFieldQueryParser(Parser.REQUIRED_TAGS, new StandardAnalyzer(), field_weights);
+		queryParser.setDefaultOperator(QueryParser.Operator.AND);
 	}
 
 	public DirectoryReader getIndexReader()
