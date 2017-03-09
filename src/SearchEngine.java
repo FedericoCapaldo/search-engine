@@ -40,9 +40,9 @@ public class SearchEngine
 								dr.document(results[hit].doc).get("url"));
 					}
 				}
-				catch (ParseException e)
+				catch (ParseException | NullPointerException e)
 				{
-					System.out.println("INVALID QUERY");
+					System.out.println("invalid query");
 				}
 			}
 

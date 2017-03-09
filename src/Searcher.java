@@ -31,11 +31,11 @@ public class Searcher
 		fieldWeights.put("strong", 4f);
 		fieldWeights.put("em", 1.25f);
 		fieldWeights.put("b", 3f);
-		fieldWeights.put("a", 1.5f);
-		fieldWeights.put("th", 2f);
-		fieldWeights.put("td", 2f);
-		fieldWeights.put("body", 0.8f);
-		fieldWeights.put("p", 0.65f);
+		fieldWeights.put("a", 5f);
+		fieldWeights.put("th", 1.5f);
+		fieldWeights.put("td", 1.5f);
+		fieldWeights.put("body", 0.80f);
+		fieldWeights.put("p", 0.50f);
 
 		// fields that must contain every word of the query, in any order
 		strictFields = new HashSet<>();
