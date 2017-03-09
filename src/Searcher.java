@@ -23,29 +23,30 @@ public class Searcher
 	public Searcher(IndexWriter indexWriter) throws IOException
 	{
 		fieldWeights = new HashMap<>();
-//		fieldWeights.put("url", 2f);
-		fieldWeights.put("title", 3f);
-		fieldWeights.put("h1", 2.5f);
-		fieldWeights.put("h2", 2.25f);
-		fieldWeights.put("h3", 2f);
-		fieldWeights.put("strong", 2f);
+		fieldWeights.put("url", 1.25f);
+		fieldWeights.put("title", 10f);
+		fieldWeights.put("h1", 6f);
+		fieldWeights.put("h2", 5.5f);
+		fieldWeights.put("h3", 5f);
+		fieldWeights.put("strong", 4f);
 		fieldWeights.put("em", 1.25f);
-		fieldWeights.put("b", 1.5f);
+		fieldWeights.put("b", 3f);
 		fieldWeights.put("a", 1.5f);
-//		fieldWeights.put("body", 1.75f);
-//		fieldWeights.put("p", 1.75f);
-//		fieldWeights.put("table", 5f);
 		fieldWeights.put("th", 2f);
 		fieldWeights.put("td", 2f);
+		fieldWeights.put("body", 0.8f);
+		fieldWeights.put("p", 0.65f);
 
+		// fields that must contain every word of the query, in any order
 		strictFields = new HashSet<>();
 		strictFields.add("title");
 		strictFields.add("h1");
 		strictFields.add("h2");
 		strictFields.add("h3");
 		strictFields.add("strong");
+//		strictFields.add("em");
+		strictFields.add("a");
 		strictFields.add("b");
-		strictFields.add("em");
 
 		indexSearcher = new IndexSearcher(DirectoryReader.open(indexWriter));
 		queryParser = new MultiFieldQueryParser(Parser.REQUIRED_TAGS, new StandardAnalyzer(), fieldWeights);
@@ -76,6 +77,6 @@ public class Searcher
 		System.out.println("QUERY: " + booleanQueryBuilder.build());
 
 		booleanQueryBuilder.setMinimumNumberShouldMatch(1);
-		return indexSearcher.search(booleanQueryBuilder.build(), 20).scoreDocs;
+		return indexSearcher.search(booleanQueryBuilder.build(), 25).scoreDocs;
 	}
 }

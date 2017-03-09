@@ -37,9 +37,9 @@ public class Parser
 
             for (Element e : contents)
             {
-                if (e.ownText().length() > 0)
+                if (e.text().length() > 0)
                 {
-                    content.get(tag).add(e.ownText());
+                    content.get(tag).add(e.text());
                 }
             }
         }
